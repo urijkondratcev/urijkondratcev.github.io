@@ -1,2 +1,2 @@
 App for swimming pool managment
-https://elbarondudnik.github.io/swim.github.io/
+https://github.com/urijkondratcev/urijkondratcev.github.io
