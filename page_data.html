@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>Swimming pool manager</title>
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="shortcut icon" href="https://img.icons8.com/color/48/000000/sea-waves.png">
+    <link rel="stylesheet" href="main.css">
+    
+</head>
+
+<body>
+    <main>
+        <section class="page_data">
+            <div class="container">
+                <h2>Hello, It's your data:</h2>
+                <h3 id="channel_name"></h3></br>
+                <h3 id="channel_description"></h3>
+                <div id="image"></div>
+                <div id="iframe"></div>
+            </div>
+            <div class="container">
+                <table id="info"></table>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const channel = urlParams.get('value');
+        let channel_description, channel_name,img,iframe, active=1;
+        //console.log(channel)
+        $(document).ready(function(){
+            $.get(
+                `https://api.thingspeak.com/channels/${channel}/feeds.json?results=1`,
+                function(data){
+                    /*Парсирование полученных данных в объект*/
+                    var obj = jQuery.parseJSON(JSON.stringify(data));
+
+                    /*Проверка на наличие имени и описания*/
+                    (obj.channel.name)?channel_name = obj.channel.name:'';
+                    (obj.channel.description)?channel_description = obj.channel.description:'';
+
+                    /*Добавление имени и описания в html*/
+                    $('#channel_name').html(channel_name);
+                    $('#channel_description').html(channel_description);
+
+                    /*Добавление iframe*/
+
+                    iframe = `<iframe src="https://api.thingspeak.com/channels/${channel}/charts/${active}" frameborder="0"></iframe>`
+                    $('#iframe').html(iframe);
+
+                    /*Добавление картинки бассейина в html*/
+                    if (channel == 407507) img=`<img src="http://ipic.su/img/img7/tn/BIG_bass_Lutck.1550263763.jpg" alt="Big Swimming pool in Lutsk">`;
+                    if (channel == 555784) img=`<img src="http://ipic.su/img/img7/fs/Small_bass_Lutck_min.1550584575.jpg" alt="Small Swimming pool in Lutsk">`;
+                    if (channel == 555785) img=`<img src="http://ipic.su/img/img7/fs/Baby_bass_Lutck_min.1550583947.jpg" alt="Baby Swimming pool in Lutsk">`;
+
+                    $('#image').html(img);
+
+                    /*Создание массивов имен свойств и их значений*/
+                    var name = [obj.channel.field1, obj.channel.field2, obj.channel.field3, obj.channel.field4, obj.channel.field5, obj.channel.field6, obj.channel.field7, obj.channel.field8];
+                    var value = [obj.feeds[0].field1, obj.feeds[0].field2, obj.feeds[0].field3, obj.feeds[0].field4, obj.feeds[0].field5, obj.feeds[0].field6, obj.feeds[0].field7, obj.feeds[0].field8];
+
+                    /*Вывод таблицы в html*/
+                    let out = '';
+                    name.forEach((item, i) => {
+                        //console.log(typeof(value[i]));
+                        item = item.split('_').join('. ');
+                        value[i] = (+value[i]).toFixed(1);
+                        out += `<tr><th>${item}</th></tr>`;
+                        out += `<tr><td>${value[i]}</td></tr>`
+                    })
+                    $('#info').html(out);
+                    
+                    //console.log(document.querySelector('#info').childNodes('tr').childNodes('th'))
+                    var th_elements = $('table th');
+                    $('table th').on('click', function(event){
+                        let num = ($(this).closest('tr').index())/2+1;
+                        var target = event.target;
+                        //$('table th').classList.delete('active');
+                        if (target.tagName == 'TH') iframe = `<iframe src="https://api.thingspeak.com/channels/${channel}/charts/${num}" frameborder="0"></iframe>`;
+                        $('#iframe').html(iframe)
+                        //alert('clicl')
+                        //iframe = `<iframe src="https://api.thingspeak.com/channels/${channel}/charts/${2}" frameborder="0"></iframe>`
+                    })
+                    //console.log($('table th')[1]);
+                }
+                )
+        })
+
+    </script>
+    
+</body>
+</html>

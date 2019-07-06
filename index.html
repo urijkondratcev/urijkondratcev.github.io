@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>Swimming pool manager</title>
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="shortcut icon" href="https://img.icons8.com/color/48/000000/sea-waves.png">
+    <link rel="stylesheet" href="main.css">
+    
+</head>
+
+<body>
+    <main>
+        <form action="#" class="center">
+            <h1>Hi<i class="fas fa-hand-paper"></i>, I`m Swimming pool manager. </h1>
+            <h2>Please, fill in the appropriate fields for further work with me. </h2>
+            <label for="login"><input type="text" id="login" placeholder="Login" required></label>
+            <label for="pass"><input type="text" id="pass" placeholder="Password" required></label>
+            <a href="choose.html" class="button">Sing in</a>
+        </form>
+    </main>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#button').onclick(function(){
+                $.post(
+                    "login.php",
+                    {
+                        "login":$("#login").val(),
+                        "pass":$('#pass').val()
+                    },
+                    function(data){
+                        console.log(data)
+                    }
+                    )
+            })
+        })
+
+    </script>
+</body>
+</html>
